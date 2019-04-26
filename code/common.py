@@ -11,11 +11,14 @@ def set_seed(seed=0):
 
 def load_data(force=False, cache='../data/cache.pkl'):
     def load_image(i):
-        df = pd.read_fwf(f'../data/image{i}.txt', header=None)
-        df.columns = ['x', 'y', 'label', 'NDAI', 'SD', 'CORR', 'angle_DF',
-                      'angle_CF', 'angle_BF', 'angle_AF', 'angle_AN']
-        df['source'] = f'Image {i}'
-        return df
+        with open(f'../data/image{i}.txt') as f:
+            lines = list(map(lambda line: line.split(), f.readlines()))
+            df = pd.DataFrame(lines, columns=['x', 'y', 'label', 'NDAI', 'SD', 'CORR', 'angle_DF',
+                                              'angle_CF', 'angle_BF', 'angle_AF', 'angle_AN'])
+            df = df.apply(pd.to_numeric)
+            df['source'] = f'Image {i}'
+            return df
+
     if not force:
         try:
             return pd.read_pickle(cache)
@@ -27,4 +30,5 @@ def load_data(force=False, cache='../data/cache.pkl'):
 
 
 if __name__ == '__main__':
-    print(load_data())
+    data = load_data(True)
+    print(data.shape)

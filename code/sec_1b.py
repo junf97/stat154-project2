@@ -15,11 +15,13 @@ def label_stats(df):
     :param df: Data source (DataFrame)
     """
     print("> Number of pixels in each image:")
-    print(df.groupby('source')['x'].count())
+    print(df.groupby('source')['x'].count().append(pd.Series([df.shape[0]], index=['Total'])))
     print()
 
     print("> Percentage of pixels in each class:")
-    print(pd.crosstab(df['source'], df['label'], normalize='index'))
+    stats = pd.crosstab(df['source'], df['label'], normalize='index')[[1, -1, 0]]
+    stats = stats.append(stats.sum(axis=0, skipna=True).rename('Total') / 3)
+    print(stats.applymap(lambda x: f"{round(float(x) * 100, 2)}%"))
     print()
 
     if df.groupby(['x', 'y', 'source']).size().max() == 1:
@@ -73,9 +75,9 @@ def label_plot(df):
         ax.set_title(source)
         df_source = df.loc[df['source'] == source]
         df_source.plot.scatter(x='x', y='y', c=df_source['label'].apply(lambda x: color[x]), s=0.1, ax=ax)
-    fig.legend(handles=[Line2D([0], [0], marker='o', color='w', label='Cloud (label = 1)',
+    fig.legend(handles=[Line2D([0], [0], marker='o', color='w', label='Cloudy (label = 1)',
                                markerfacecolor=color[1], markersize=10),
-                        Line2D([0], [0], marker='o', color='w', label='No Cloud (label = -1)',
+                        Line2D([0], [0], marker='o', color='w', label='Cloud-Free (label = -1)',
                                markerfacecolor=color[-1], markersize=10),
                         Line2D([0], [0], marker='o', color='w', label='Unlabeled (label = 0)',
                                markerfacecolor=color[0], markersize=10)
@@ -88,5 +90,5 @@ if __name__ == '__main__':
 
     data = load_data()
     label_stats(data)
-    label_plot(data)
-    feature_plot(data)
+    # label_plot(data)
+    # feature_plot(data)
