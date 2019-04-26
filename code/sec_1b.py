@@ -64,9 +64,10 @@ def label_plot(df):
 
     :param df: Data source (DataFrame)
     """
-    fig = plt.figure(figsize=(11, 4))
-    fig.subplots_adjust(hspace=0.4, wspace=0.4, bottom=0.25)
-    color = {1: '#B22222', 0: '#dddddd', -1: '#6495ED'}
+    fig = plt.figure(figsize=(13, 4))
+    fig.subplots_adjust(hspace=0.4, wspace=0.4, bottom=0.21)
+    # color = {1: '#B22222', 0: '#dddddd', -1: '#6495ED'}
+    color = {1: '#dddddd', 0: 'black', -1: 'grey'}
     for idx, source in enumerate(df['source'].unique(), 1):
         ax = fig.add_subplot(1, 3, idx)
         ax.set_title(source)
