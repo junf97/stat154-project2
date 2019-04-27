@@ -1,7 +1,6 @@
 from sklearn.dummy import DummyClassifier
 from sklearn.metrics import accuracy_score
 
-from common import set_seed
 from sec_2a import split_data
 
 
@@ -15,9 +14,7 @@ class TrivialClassifier(DummyClassifier):
 
 
 if __name__ == '__main__':
-    set_seed(0)
-
-    train_X, val_X, test_X, train_y, val_y, test_y = split_data()
+    train_X, val_X, test_X, train_y, val_y, test_y = split_data(random_state=0, keep_unlabeled=True)
 
     classifier = TrivialClassifier()
     classifier.fit(train_X, train_y)

@@ -1,42 +1,68 @@
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import KFold
 
-from common import set_seed
 from sec_2a import split_data
 from sec_2b import TrivialClassifier
 
 
-def CVgeneric(classifier, X, y, K=3, scoring=accuracy_score):
+def CVgeneric(classifier, X, y, K=3, scoring=accuracy_score, split_method=1, random_state=None):
     """
     A generic cross validation (CV) function that takes a generic classifier,
     training features, training labels, number of folds and a loss function as
     inputs and outputs the K-fold CV loss on the training set.
 
-    :param classifier: The classifier (should has implemented fit() and predict())
-    :param X:          Training features
-    :param y:          Training labels
-    :param K:          Number of folds
-    :param scoring:    A callable loss function: scoring(y_true, y_pred)
+    :param classifier:    The classifier (should has implemented fit() and predict())
+    :param X:             Training features
+    :param y:             Training labels
+    :param K:             Number of folds
+    :param scoring:       A callable loss function: scoring(y_true, y_pred)
+    :param split_method:  Method of splitting data (either 1 or 2)
+    :param random_state:  Random seed to be used
 
-    :return: K-fold CV loss
+    :return: A tuple: (mean loss, [fold 1 loss, ..., fold K loss])
     """
-    kf = KFold(n_splits=K)
-    scores = []
-    for train_index, test_index in kf.split(X):
-        train_X, test_X = X.iloc[train_index, :], X.iloc[test_index, :]
-        train_y, test_y = y.iloc[train_index], y.iloc[test_index]
-        classifier.fit(train_X, train_y)
-        scores.append(scoring(test_y, classifier.predict(test_X)))
-    return sum(scores) / K
+    assert type(K) is int and K >= 2
+
+    # Create K test sets by using split method defined in section 2a
+    test_sets = []
+    remain_X, remain_y = X, y
+    for fold_id in range(K-1):
+        remain = remain_X.merge(remain_y, left_index=True, right_index=True)
+        remain_X, _, fold_test_X, remain_y, _, fold_test_y = \
+            split_data(remain, split_method, val_ratio=0, test_ratio=1/(K-fold_id),
+                       keep_unlabeled=True, random_state=random_state)
+        test_sets.append((fold_test_X, fold_test_y))
+    test_sets.append((remain_X, remain_y))
+
+    # Compute loss in each fold
+    fold_losses = []
+    for fold_id in range(K):
+        fold_train_X, fold_train_y = map(pd.concat, zip(*test_sets[:fold_id] + test_sets[fold_id+1:]))
+        fold_test_X, fold_test_y = test_sets[fold_id]
+        classifier.fit(fold_train_X, fold_train_y)
+        fold_losses.append(scoring(fold_test_y, classifier.predict(fold_test_X)))
+    return np.mean(fold_losses), fold_losses
 
 
 if __name__ == '__main__':
-    set_seed(0)
 
-    train_X, val_X, test_X, train_y, val_y, test_y = split_data()
+    # Load and split data
+    train_X, _, test_X, train_y, _, test_y = split_data(val_ratio=0,
+                                                        split_method=1,
+                                                        random_state=0)
 
-    K = 3
-    trivial_classifier = TrivialClassifier()
-    loss = CVgeneric(trivial_classifier, train_X, train_y, K=K, scoring=accuracy_score)
+    # Test CVgeneric() on multiple classifier
+    for classifier in [TrivialClassifier(),
+                       SGDClassifier(max_iter=1000, tol=1e-3),
+                       LogisticRegression(solver='lbfgs', max_iter=10000)]:
 
-    print(f"{K}-fold CV loss of {trivial_classifier.__class__.__name__} = ", loss)
+        mean_loss, losses = CVgeneric(classifier=classifier,
+                                      X=train_X,
+                                      y=train_y,
+                                      K=5,
+                                      scoring=accuracy_score,
+                                      split_method=1,
+                                      random_state=0)
+        print(f"Mean {len(losses)}-fold CV loss of {classifier.__class__.__name__} =", mean_loss)
