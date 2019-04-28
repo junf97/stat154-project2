@@ -55,8 +55,7 @@ if __name__ == '__main__':
 
     # Test CVgeneric() on multiple classifier
     for classifier in [TrivialClassifier(),
-                       SGDClassifier(max_iter=1000, tol=1e-3),
-                       LogisticRegression(solver='lbfgs', max_iter=10000)]:
+                       SGDClassifier(max_iter=1000, tol=1e-3)]:
 
         mean_loss, losses = CVgeneric(classifier=classifier,
                                       X=train_X,
