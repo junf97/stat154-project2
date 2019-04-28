@@ -52,10 +52,10 @@ def feature_plot(df):
         ('angle_AN', 'Radiance angle AN', fig.add_subplot(2, 4, 8))
     ]
 
-    for label, df_source in df.groupby('source'):
+    for source, df_source in df.groupby('source'):
         for feature, title, ax in features:
             ax.set_title(f'Distribution of {title}')
-            df_source[feature].plot(kind="kde", ax=ax, label=label, legend=True)
+            df_source[feature].plot(kind="kde", ax=ax, label=f'Image {source}', legend=True)
             ax.set_xlabel(title)
     plt.show()
 
@@ -72,7 +72,7 @@ def label_plot(df):
     color = {1: '#dddddd', 0: 'black', -1: 'grey'}
     for idx, source in enumerate(df['source'].unique(), 1):
         ax = fig.add_subplot(1, 3, idx)
-        ax.set_title(source)
+        ax.set_title(f'Image {source}')
         df_source = df.loc[df['source'] == source]
         df_source.plot.scatter(x='x', y='y', c=df_source['label'].apply(lambda x: color[x]), s=0.1, ax=ax)
     fig.legend(handles=[Line2D([0], [0], marker='o', color='w', label='Cloudy (label = 1)',
@@ -90,5 +90,5 @@ if __name__ == '__main__':
 
     data = load_data()
     label_stats(data)
-    # label_plot(data)
-    # feature_plot(data)
+    label_plot(data)
+    feature_plot(data)

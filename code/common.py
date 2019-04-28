@@ -16,7 +16,7 @@ def load_data(force=False, cache='../data/cache.pkl'):
             df = pd.DataFrame(lines, columns=['x', 'y', 'label', 'NDAI', 'SD', 'CORR', 'angle_DF',
                                               'angle_CF', 'angle_BF', 'angle_AF', 'angle_AN'])
             df = df.apply(pd.to_numeric)
-            df['source'] = f'Image {i}'
+            df['source'] = i
             return df
 
     if not force:
@@ -24,7 +24,7 @@ def load_data(force=False, cache='../data/cache.pkl'):
             return pd.read_pickle(cache)
         except (FileNotFoundError, KeyError):
             pass
-    df = pd.concat(list(map(load_image, range(1, 4))))
+    df = pd.concat(list(map(load_image, range(1, 4))), ignore_index=True)
     df.to_pickle(cache)
     return df
 
