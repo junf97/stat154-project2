@@ -14,7 +14,7 @@ class TrivialClassifier(DummyClassifier):
 
 
 if __name__ == '__main__':
-    train_X, val_X, test_X, train_y, val_y, test_y = split_data(random_state=0, keep_unlabeled=True)
+    train_X, val_X, test_X, train_y, val_y, test_y = split_data(split_method=1, random_state=0, keep_unlabeled=True)
 
     classifier = TrivialClassifier()
     classifier.fit(train_X, train_y)

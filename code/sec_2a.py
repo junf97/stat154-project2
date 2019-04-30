@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from common import load_data
+from common import load_data, justify
 
 
 def split_data(df=None, split_method=1,
@@ -77,6 +77,7 @@ def split_data(df=None, split_method=1,
             # Convert into 2D matrix where column and row indices are x and y coordinates
             # and values are the indices of observations in the original dataframe
             pixels = pd.pivot_table(df.reset_index(), index='x', columns='y', values='index')
+            pixels[:] = justify(pixels.values, invalid_val=np.nan, axis=1, side='left')
 
             x_gap = 1 / np.sqrt(ratio) if ratio > 0 else pixels.shape[0] + 1
             y_gap = 1 / np.sqrt(ratio) if ratio > 0 else pixels.shape[1] + 1
@@ -123,7 +124,7 @@ def split_data(df=None, split_method=1,
 
 if __name__ == '__main__':
     data = load_data()
-    train_X, val_X, test_X, train_y, val_y, test_y = split_data(data, split_method=2, random_state=0)
+    train_X, val_X, test_X, train_y, val_y, test_y = split_data(data, split_method=1, random_state=0)
 
     total_size = sum([x.shape[0] for x in [train_X, val_X, test_X]])
     print(f"Train size:      X={train_X.shape}, y={train_y.shape} [ratio={train_X.shape[0] / total_size}]")
