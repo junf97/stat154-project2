@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
@@ -105,5 +106,10 @@ if __name__ == '__main__':
     #                   ]))
     #
     # ################################################
-    # # 4.
+    # # 4. QDA
     # ################################################
+    # Run Model
+    print(run_model(classifier=QuadraticDiscriminantAnalysis(),
+                    feature_list=[['NDAI', 'SD', 'CORR'],
+                                  ['NDAI', 'SD', 'CORR', 'angle_DF', 'angle_CF', 'angle_BF', 'angle_AF', 'angle_AN']
+                                  ]))

@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_curve
@@ -24,6 +25,10 @@ y_probs = {
         (Pipeline([('scale', StandardScaler()), ('knn', KNeighborsClassifier(n_neighbors=35))])
              .fit(train_X[['NDAI', 'SD', 'CORR', 'angle_DF', 'angle_CF', 'angle_BF', 'angle_AF', 'angle_AN']], train_y)
              .predict_proba(test_X[['NDAI', 'SD', 'CORR', 'angle_DF', 'angle_CF', 'angle_BF', 'angle_AF', 'angle_AN']])[:, 1]),
+    'QDA':
+        (QuadraticDiscriminantAnalysis()
+             .fit(train_X[['NDAI', 'SD', 'CORR']], train_y)
+             .predict_proba(test_X[['NDAI', 'SD', 'CORR']])[:, 1])
 }
 
 df = pd.DataFrame(columns=['fpr', 'tpr', 'thres', 'model'])

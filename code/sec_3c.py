@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
@@ -25,6 +26,11 @@ y_predicts = {
         pd.Series(Pipeline([('scale', StandardScaler()), ('knn', KNeighborsClassifier(n_neighbors=35))])
              .fit(train_X[['NDAI', 'SD', 'CORR', 'angle_DF', 'angle_CF', 'angle_BF', 'angle_AF', 'angle_AN']], train_y)
              .predict_proba(test_X[['NDAI', 'SD', 'CORR', 'angle_DF', 'angle_CF', 'angle_BF', 'angle_AF', 'angle_AN']])[:, 1] >= 0.37142857142857144)
+             .apply(lambda b: 1 if b else -1),
+    'QDA':
+        pd.Series(QuadraticDiscriminantAnalysis()
+             .fit(train_X[['NDAI', 'SD', 'CORR']], train_y)
+             .predict_proba(test_X[['NDAI', 'SD', 'CORR']])[:, 1] >= 0.15130378416778748)
              .apply(lambda b: 1 if b else -1),
 }
 
