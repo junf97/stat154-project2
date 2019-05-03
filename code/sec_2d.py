@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LogisticRegression, SGDClassifier
+from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import accuracy_score
 
 from sec_2a import split_data
@@ -64,7 +64,6 @@ if __name__ == '__main__':
     # Test CVgeneric() on multiple classifier
     for classifier in [TrivialClassifier(),
                        SGDClassifier(max_iter=1000, tol=1e-3)]:
-
         mean_loss, losses = CVgeneric(classifier=classifier,
                                       X=train_X,
                                       y=train_y,

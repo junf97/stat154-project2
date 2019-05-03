@@ -57,7 +57,6 @@ def feature_plot(df):
             ax.set_title(f'Distribution of {title}')
             df_source[feature].plot(kind="kde", ax=ax, label=f'Image {source}', legend=True)
             ax.set_xlabel(title)
-    plt.show()
 
 
 def label_plot(df):
@@ -68,9 +67,8 @@ def label_plot(df):
     """
     fig = plt.figure(figsize=(13, 4))
     fig.subplots_adjust(hspace=0.4, wspace=0.4, bottom=0.21)
-    # color = {1: '#B22222', 0: '#dddddd', -1: '#6495ED'}
     color = {1: '#dddddd', 0: 'black', -1: 'grey'}
-    for idx, source in enumerate(df['source'].unique(), 1):
+    for idx, source in enumerate(sorted(df['source'].unique()), 1):
         ax = fig.add_subplot(1, 3, idx)
         ax.set_title(f'Image {source}')
         df_source = df.loc[df['source'] == source]
@@ -81,8 +79,9 @@ def label_plot(df):
                                markerfacecolor=color[-1], markersize=10),
                         Line2D([0], [0], marker='o', color='w', label='Unlabeled (label = 0)',
                                markerfacecolor=color[0], markersize=10)
-                        ], loc='lower center', bbox_to_anchor=(0.52, 0.01), ncol=3)
-    plt.show()
+                        ],
+               labels=['Cloudy (label = 1)', 'Cloud-Free (label = -1)', 'Unlabeled (label = 0)'],
+               loc='lower center', bbox_to_anchor=(0.52, 0.01), ncol=3)
 
 
 if __name__ == '__main__':
@@ -92,3 +91,4 @@ if __name__ == '__main__':
     label_stats(data)
     label_plot(data)
     feature_plot(data)
+    plt.show()

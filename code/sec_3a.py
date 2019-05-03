@@ -108,8 +108,8 @@ if __name__ == '__main__':
     # ################################################
     # # 4. QDA
     # ################################################
-    # Run Model
-    print(run_model(classifier=QuadraticDiscriminantAnalysis(),
-                    feature_list=[['NDAI', 'SD', 'CORR'],
-                                  ['NDAI', 'SD', 'CORR', 'angle_DF', 'angle_CF', 'angle_BF', 'angle_AF', 'angle_AN']
-                                  ]))
+    # # Run Model
+    # print(run_model(classifier=QuadraticDiscriminantAnalysis(),
+    #                 feature_list=[['NDAI', 'SD', 'CORR'],
+    #                               ['NDAI', 'SD', 'CORR', 'angle_DF', 'angle_CF', 'angle_BF', 'angle_AF', 'angle_AN']
+    #                               ]))

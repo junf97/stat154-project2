@@ -112,7 +112,9 @@ def split_data(df=None, split_method=1,
     # Clean up, Merge, Shuffle
     ###########################################
     # Shuffle data before return
-    train, val, test = train.sample(frac=1), val.sample(frac=1) if not val.empty else val, test.sample(frac=1)
+    train, val, test = (train.sample(frac=1) if not train.empty else val,
+                        val.sample(frac=1) if not val.empty else val,
+                        test.sample(frac=1) if not test.empty else test)
 
     # Split features and label
     train_X, train_y = train.loc[:, ~train.columns.isin(['label'])], train['label']
