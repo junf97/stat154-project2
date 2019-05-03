@@ -16,9 +16,11 @@ created using [Microsoft Office 365](https://www.office365.com/). Previous versi
 
 To reproduce all images and data included in the write-up, you will need to
 first put the raw image data from MISR sensors into the `data` folder according to the format specified
-in Table 1 of `documents/project2.pdf`, and then run the Python code associated with each section
-in the `code` folder. [Python 3.7.3](https://www.python.org/downloads/release/python-373/) (with [pip 19.1](https://pip.pypa.io/en/stable/))
-is used for coding and all third-party libraries that were used are listed in `code/requirements.txt`.
+in Table 1 of `documents/project2.pdf` (three images that were used in this report should be already there),
+and then run the Python code associated with each section in the `code` folder. You should be able to see one
+file for each section of the report, and it contains all the contents included in that specific section. [Python 3.7.3](https://www.python.org/downloads/release/python-373/) (with [pip 19.1](https://pip.pypa.io/en/stable/))
+is used for coding and all third-party libraries that were used are listed in `code/requirements.txt`. Please
+notice that some of the sections are written in [Jupyter Notebook](https://jupyter.org/) instead of native Python files.
 
 The CVgeneric function is included separately in `code/sec_2d.py`.
 
